@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Game</title>
+</head>
+<body>
+    <h1>Upload a Game</h1>
+
+    <form id="uploadForm" enctype="multipart/form-data">
+        <label for="gameName">Game Name:</label>
+        <input type="text" id="gameName" name="Name" required><br><br>
+
+        <label for="gameFile">Game File (.zip):</label>
+        <input type="file" id="file" name="ZipData" accept=".zip" required><br><br>
+
+        <button type="submit">Upload Game</button>
+    </form>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', async function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const gameName = document.getElementById('gameName').value;  // Get text input value
+            const file = document.getElementById('file').files[0]; // Get file input
+
+            if (!file) {
+                alert("Please select a file.");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("gameName", gameName);  // Use the correct property name
+            formData.append("file", file); // Use the correct property name
+
+            try {
+                const response = await fetch('http://localhost:5138/api/admin/upload', {  
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Server responded with ${response.status}`);
+                }
+
+                const result = await response.json();
+                alert('Game uploaded successfully!');
+                console.log(result);
+            } catch (error) {
+                alert('Error uploading game: ' + error.message);
+                console.error(error);
+            }
+        });
+    </script>
+</body>
+</html>

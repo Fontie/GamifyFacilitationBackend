@@ -1,0 +1,6 @@
+@PrototypeGamify_HostAddress = http://localhost:5138
+
+GET {{PrototypeGamify_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

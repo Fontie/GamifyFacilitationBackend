@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Play Game</title>
+</head>
+<body>
+    <h1>Play a Game</h1>
+
+    <label for="gameNameInput">Enter Game Name:</label>
+    <input type="text" id="gameNameInput" placeholder="Enter game name"><br><br>
+
+    <button id="playButton">Play Game</button><br><br>
+
+    <iframe id="gameFrame" style="width: 800px; height: 600px;" frameborder="0"></iframe>
+
+    <script>
+        document.getElementById('playButton').addEventListener('click', function() {
+            const gameName = document.getElementById('gameNameInput').value;
+
+            if (!gameName) {
+                alert("Please enter a game name.");
+                return;
+            }
+
+            // Fetch the game URL from the backend after deployment
+            fetch(`http://localhost:5138/api/admin/download/${gameName}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.url) {
+                        // Load the game in the iframe
+                        document.getElementById('gameFrame').src = data.url;
+                    } else {
+                        alert("Game not found or deployment failed.");
+                    }
+                })
+                .catch(error => {
+                    alert("Error loading game: " + error);
+                    console.log(error);
+                });
+        });
+    </script>
+</body>
+</html>
