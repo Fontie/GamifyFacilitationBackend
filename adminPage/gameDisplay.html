@@ -3,43 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Play Game</title>
+    <title>Dlacego nie dzialasz?</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        #game-container {
+            width: 100%;
+            height: 80vh;
+            border: 2px solid #ccc;
+            margin-top: 20px;
+        }
+        input, button {
+            padding: 10px;
+            font-size: 16px;
+            margin: 5px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Play a Game</h1>
 
-    <label for="gameNameInput">Enter Game Name:</label>
-    <input type="text" id="gameNameInput" placeholder="Enter game name"><br><br>
+    <h1>Loading from back end</h1>
+    
+    <input type="number" id="gameIdInput" placeholder="Enter Game ID" min="1">
+    <button onclick="loadGame()">Load Game</button>
 
-    <button id="playButton">Play Game</button><br><br>
-
-    <iframe id="gameFrame" style="width: 800px; height: 600px;" frameborder="0"></iframe>
+    <div id="game-container">
+        <p>No game loaded yet.</p>
+    </div>
 
     <script>
-        document.getElementById('playButton').addEventListener('click', function() {
-            const gameName = document.getElementById('gameNameInput').value;
-
-            if (!gameName) {
-                alert("Please enter a game name.");
+        async function loadGame() {
+            const gameId = document.getElementById("gameIdInput").value;
+            if (!gameId) {
+                alert("Please enter a valid Game ID!");
                 return;
             }
 
-            // Fetch the game URL from the backend after deployment
-            fetch(`http://localhost:5138/api/admin/download/${gameName}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.url) {
-                        // Load the game in the iframe
-                        document.getElementById('gameFrame').src = data.url;
-                    } else {
-                        alert("Game not found or deployment failed.");
-                    }
-                })
-                .catch(error => {
-                    alert("Error loading game: " + error);
-                    console.log(error);
-                });
-        });
+            try {
+                // Fetch the game URL from the backend
+                const response = await fetch(`http://localhost:5138/api/game/load/${gameId}`);
+                
+                if (!response.ok) throw new Error("Game not found or error loading.");
+
+                const { url } = await response.json();
+
+                // Clear previous content and create an iframe for the game
+                const container = document.getElementById("game-container");
+                container.innerHTML = ""; // Clear previous game
+                
+                const iframe = document.createElement("iframe");
+                iframe.src = url;
+                iframe.width = "100%";
+                iframe.height = "100%";
+                iframe.style.border = "none";
+
+                container.appendChild(iframe);
+            } catch (error) {
+                console.error("Error loading game:", error);
+                alert("Failed to load game. Please check the Game ID.");
+            }
+        }
     </script>
+
 </body>
 </html>
+
+
+
+
+
