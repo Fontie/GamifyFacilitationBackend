@@ -15,7 +15,7 @@ namespace GamifyBackEnd.Controllers
     {
         [HttpPost("upload")]
         [RequestSizeLimit(100_000_000_000_000)]
-        public async Task<IActionResult> UploadGame([FromForm] string gameName, [FromForm] IFormFile file)
+        public async Task<IActionResult> UploadGame([FromForm] string gameName, [FromForm] IFormFile file, [FromForm] string levelName)
         {
             if (file == null || file.Length == 0)
             {
@@ -32,8 +32,8 @@ namespace GamifyBackEnd.Controllers
                 var newGame = new Game
                 {
                     Name = gameName,
-                    Version = 1,
-                    ZipData = fileData
+                    ZipData = fileData,
+                    LevelName = levelName
                 };
 
                 db.Games.Add(newGame);
@@ -51,7 +51,7 @@ namespace GamifyBackEnd.Controllers
 
             using (var db = new GameDbContext())
             {
-                game = db.Games.FirstOrDefault(game => game.Name == gameName);
+                game = db.Games.FirstOrDefault(game => game.LevelName == gameName);
             }
          
             if (game.ZipData == null)

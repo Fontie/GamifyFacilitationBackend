@@ -19,17 +19,17 @@ namespace GamifyBackEnd.Controllers
         }
 
         // Endpoint to fetch, extract, and serve the game, agree what the game id should even be at the end of the day pls.
-        [HttpGet("load/{gameId}")]
-        public async Task<IActionResult> LoadGame(int gameId)
+        [HttpGet("load/{levelName}")]
+        public async Task<IActionResult> LoadGame(string levelName)
         {
             try
             {
                 // Simulating fetching ZIP from database as a byte array
-                byte[] zipData = await GetGameZipFromDatabase(gameId);
+                byte[] zipData = await GetGameZipFromDatabase(levelName);
                 if (zipData == null) return NotFound("Game not found.");
 
                 // Define extraction path (wwwroot/games/{gameId}/)
-                string gameFolderPath = Path.Combine(_env.WebRootPath, "games", gameId.ToString());
+                string gameFolderPath = Path.Combine(_env.WebRootPath, "games", levelName);
 
                 var killme = 10;
 
@@ -47,7 +47,7 @@ namespace GamifyBackEnd.Controllers
                 }
 
                 // Return the game URL
-                string gameUrl = $"{Request.Scheme}://{Request.Host}/games/{gameId}/index.html";
+                string gameUrl = $"{Request.Scheme}://{Request.Host}/games/{levelName}/index.html";
                 return Ok(new { url = gameUrl });
             }
             catch (Exception ex)
@@ -57,7 +57,7 @@ namespace GamifyBackEnd.Controllers
         }
 
         // Simulated method to get ZIP file from database
-        private async Task<byte[]> GetGameZipFromDatabase(int gameId)
+        private async Task<byte[]> GetGameZipFromDatabase(string levelName)
         {
             try
             {
@@ -66,7 +66,7 @@ namespace GamifyBackEnd.Controllers
 
                 using (var db = new GameDbContext())
                 {
-                    game = db.Games.FirstOrDefault(game => game.Id == gameId);
+                    game = db.Games.FirstOrDefault(game => game.LevelName == levelName);
                 }
 
                 if (game != null)
