@@ -6,7 +6,7 @@ namespace GamifyBackEnd.Controllers
     [Route("api/overworld")]
     public class OverworldController : Controller
     {
-        [HttpPost("getPlayerProgress")]
+        [HttpGet("getPlayerProgress")]
         public IActionResult GetData()
         {
             var data = new { message = "Hello from .NET Backend!" };

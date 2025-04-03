@@ -45,7 +45,27 @@ app.UseStaticFiles(new StaticFileOptions
         Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "games")),
     RequestPath = "/games",
     ServeUnknownFileTypes = true, //hail marry at this point tbh
-    DefaultContentType = "application/octet-stream"
+    DefaultContentType = "application/octet-stream",
+
+    OnPrepareResponse = ctx =>
+    {
+        var path = ctx.File.Name;
+
+        // If serving a .br file, set the Content-Encoding header
+        if (path.EndsWith(".br"))
+        {
+            ctx.Context.Response.Headers["Content-Encoding"] = "br";
+
+            // Set the correct Content-Type based on the file extension
+            ctx.Context.Response.Headers["Content-Type"] = path switch
+            {
+                var p when p.EndsWith(".js.br") => "application/javascript",
+                var p when p.EndsWith(".data.br") => "application/octet-stream",
+                var p when p.EndsWith(".wasm.br") => "application/wasm",
+                _ => "application/octet-stream"
+            };
+        }
+    }
 });
 
 
