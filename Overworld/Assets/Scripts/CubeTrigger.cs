@@ -1,0 +1,70 @@
+using UnityEngine;
+
+public class CubeTrigger : MonoBehaviour
+{
+    public bool playerOnCube = false; // Track if the player is standing on the cube
+    public string levelURL = "http://unity3d.com/";
+    public int accessLevelNeeded = 0;
+    private bool canAccessLevel = false;
+    public GameObject playerObject; 
+
+    public void OnTriggerEnter(Collider collision)
+    {
+        
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            playerOnCube = true;
+
+            PlayerMovement playerScript = playerObject.GetComponent<PlayerMovement>();
+            Debug.Log(playerScript.accessLevel);
+
+            if (playerScript != null && playerScript.accessLevel >= accessLevelNeeded)
+            {
+                canAccessLevel = true;
+
+                // Change player color
+                Renderer playerRenderer = collision.gameObject.GetComponent<Renderer>();
+                if (playerRenderer != null)
+                {
+                    playerRenderer.material.color = new Color(1, 0, 0, 1);
+                }
+            }
+            else
+            {
+                canAccessLevel = false;
+                Debug.Log("You cant play this yet.");
+            }      
+        }
+    }
+
+    public void OnTriggerExit(Collider collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            playerOnCube = false;
+            canAccessLevel = false;
+            //Debug.Log("Player left the cube.");
+
+            // Return player color
+            Renderer playerRenderer = collision.gameObject.GetComponent<Renderer>();
+            if (playerRenderer != null)
+            {
+                playerRenderer.material.color = new Color(255, 255, 255);
+            }
+
+        }
+    }
+
+    private void Update()
+    {
+        if (canAccessLevel && Input.GetKeyDown(KeyCode.Return)) // Detect Enter key
+        {
+            PerformAction();
+        }
+    }
+
+    public void PerformAction()
+    {
+        Application.OpenURL(levelURL);
+    }
+}
