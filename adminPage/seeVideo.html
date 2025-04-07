@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VR IS SUPER COOL</title>
+</head>
+<body>
+    <h1>Watch this YouTube Video</h1>
+
+    <!-- Embed YouTube Video -->
+    <div>
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/ycV7iFG_l-U?autoplay=1" 
+        frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
+        allowfullscreen></iframe>
+    </div>
+
+    <!-- Button to navigate to another page -->
+    <div>
+        <button id="navigateButton">I have watched the video</button>
+    </div>
+
+    <script>
+        // Function to navigate to another page
+        document.getElementById('navigateButton').onclick = function() {
+            //window.location.href = '// Replace with the URL of the page you want to link to
+            window.history.back();
+        };
+    </script>
+</body>
+</html>
+
+

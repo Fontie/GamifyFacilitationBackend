@@ -3,62 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload Game</title>
+    <link rel="stylesheet" href="index.css" />
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <title>Document</title>
 </head>
 <body>
-    <h1>Upload a Game</h1>
+    <header class="header">
+        <!-- <a href="#home" class="logo">Izekor <span>Kingsley</span></a> -->
+        <a href="index.html" class="logo"><img src="images/logo-yonder.svg" alt="mylogo"></a>
+  
+        <!-- <i class="bx bx-menu" id="menu-icon"></i> -->
+  
+        <nav class="navbar">
+          <a href="#Tutorial">Tutorial</a>
+          <div class="navButton">
 
-    <form id="uploadForm" enctype="multipart/form-data">
-        <label for="gameName">Game Name:</label>
-        <input type="text" id="gameName" name="Name" required><br><br>
+            <a href="#About">About</a>
 
-        <label for="gameFile">Game File (.zip):</label>
-        <input type="file" id="file" name="ZipData" accept=".zip" required><br><br>
+          </div>
+        </nav>
+      </header>
 
-        <label for="levelName">Which level:</label>
-        <input type="text" id="levelName" name="levelName" required><br><br>
+      <section class="home" id="home">
+        <div class="home-content">
+            <!-- <video src="xrVideo.mp4" muted="" autoplay=""></video> -->
+             <video autoplay loop muted plays-inline class ="background-clip">
+                <source src="images/xrVideo.mp4" type="video/mp4">
+             </video>
+
+            <h1>Gamify Xr Experience</h1>
+            <p>
+                A playground for immersive learning, where education meets the excitement of XR.
+            </p>
+
+        </div>
 
 
-        <button type="submit">Upload Game</button>
-    </form>
+      </section>
 
-    <script>
-        document.getElementById('uploadForm').addEventListener('submit', async function(event) {
-            event.preventDefault(); // Prevent default form submission
+      <section class="button">
 
-            const gameName = document.getElementById('gameName').value;  // Get text input value
-            const file = document.getElementById('file').files[0]; // Get file input
-            const levelName = document.getElementById('levelName').value;
+        <div class="bigButton">
+            <a href="http://localhost:8000/overworld.html" class="btn">PLAY</a>
+          </div>
 
-            if (!file) {
-                alert("Please select a file.");
-                return;
-            }
+      </section>
 
-            const formData = new FormData();
-            formData.append("gameName", gameName);  // Use the correct property name
-            formData.append("file", file); // Use the correct property name
-            formData.append("levelName", levelName); // name is to keep track of what the game is, 
-            // level name is which level the game will be played in, this is what the back-end will be looking for.
+      <section class="morelogo">
 
-            try {
-                const response = await fetch('https://localhost:7220/api/admin/upload', {  
-                    method: 'POST',
-                    body: formData
-                });
+        <div class="logo-slider">
+            <div class="logo-track">
+              <img src="images/logo-yonder.svg" alt="Logo 1" />
+              <img src="images/logo Fontys.png" alt="Logo 2" />
+              <img src="images/mindlabs.png" alt="Logo 3" />
+              <img src="images/tilburg logo.png" alt="Logo 4" />
+              <img src="images/FL-logo-color.png" alt="Logo 5" />
+              <!-- Repeat logos for a seamless loop -->
+              <img src="images/logo-yonder.svg" alt="Logo 1" />
+              <img src="images/logo Fontys.png" alt="Logo 2" />
+              <img src="images/mindlabs.png" alt="Logo 3" />
+              <img src="images/tilburg logo.png" alt="Logo 4" />
+              <img src="images/FL-logo-color.png" alt="Logo 5" />
+            </div>
+          </div>
+      </section>
 
-                if (!response.ok) {
-                    throw new Error(`Server responded with ${response.status}`);
-                }
+      <section class="devices">
 
-                const result = await response.json();
-                alert('Game uploaded successfully!');
-                console.log(result);
-            } catch (error) {
-                alert('Error uploading game: ' + error.message);
-                console.error(error);
-            }
-        });
-    </script>
+        <div class="item">
+            <div class="image"><a href="#"><img src="images/deskt.png" alt="Web-Pc"></a></div>
+            <h4>Web</h4>
+            <p>
+                Discover immersive worlds and connect with others seamlessly from your mobile phone.
+            </p>
+        </div>
+
+        <div class="item">
+            <div class="image"><a href="#"><img src="images/x headset.png" alt="Headsets"></a></div>
+            <h4>Xr</h4>
+            <p>
+                Experience rich engagement and authentic connections within dynamic virtual spaces.
+            </p>
+        </div>
+
+        <div class="item">
+            <div class="image"><a href="#"><img src="images/Phone.png" alt="Mobile-Phone"></a></div>
+            <h4>Phone</h4>
+            <p>
+                Experience immersive XR learning directly from your browser, no downloads needed.
+            </p>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <a href="index.html" class="logo"><img src="images/logo-yonder.svg" alt="mylogo"></a>
+        <div class="socials">
+          <a href="#"><i class="bx bxl-linkedin"></i></a>
+          <a href="#"><i class="bx bxl-github"></i></a>
+          <a href="#"><i class="bx bxl-instagram-alt"></i></a>
+          <a href="#"><i class="bx bxl-twitter"></i></a>
+        </div>
+        <!-- <p class="copyright">© Izekor Kingsley | All Rights Reserved.</p> -->
+      </footer>
+
+    
 </body>
 </html>
