@@ -27,8 +27,6 @@ Desktop.ini
 # Visual Studio
 # ============
 .vs/
-*.csproj
-*.unityproj
 *.sln
 *.suo
 *.tmp
@@ -54,7 +52,6 @@ Desktop.ini
 # ===========
 *.pidb
 *.meta
-*.asset
 
 # ===================
 # Crash Reports
