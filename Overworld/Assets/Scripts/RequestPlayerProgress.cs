@@ -1,24 +1,26 @@
 using UnityEngine;
 using UnityEngine.Networking;
 using System.Collections;
-using Unity.VisualScripting;
+// using Unity.VisualScripting;
 using System.Runtime.InteropServices;
 using UnityEngine.UIElements;
 using System.Globalization;
-using Unity.Mathematics;
+// using Unity.Mathematics;
 //using Newtonsoft.Json;
 
 public class RequestPlayerProgress : MonoBehaviour
 {
-    [DllImport("__Internal")]
-    private static extern void GetDataForUnity();
+    //[DllImport("__Internal")]
+    //private static extern void GetDataForUnity();
 
     public GameObject playerObject;
 
     void Start()
     {
-        GetDataForUnity();
+        //GetDataForUnity();
     }
+
+    
 
     // This function will receive the JSON data from JavaScript
     public void ReceiveData(string jsonData)
