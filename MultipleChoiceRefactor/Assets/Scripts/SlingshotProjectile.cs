@@ -1,61 +1,67 @@
 using System;
 using UnityEngine;
+using UnityEngine.XR.Interaction.Toolkit;
 
 public class SlingshotProjectile : MonoBehaviour
 {
     public Transform slingshotAnchor;
     public float launchForceMultiplier = 1000f;
 
-    public bool active = false; // Check if the projectile is pulled back
+    private XRGrabInteractable grab;
+    public Boolean active = false; //Check if the projectile is pulled back
     private Rigidbody rb;
 
     private Vector3 startPos;
-    public SlingshotVisual slingshotVisual; // for visuals
-
-    private Transform holdingController = null;
-
-    private float lastToggleTime = -Mathf.Infinity;
-    public float toggleCooldown = 2f;
+    public SlingshotVisual slingshotVisual;//for visuals
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        grab = GetComponent<XRGrabInteractable>();
         startPos = transform.position;
+
         rb.isKinematic = true; // Start frozen
+
+        grab.selectExited.AddListener(Launch);
+
+
     }
 
-    void Update()
+    void OnGrab(SelectEnterEventArgs args)
     {
-        if (holdingController != null)
-        {
-            // Follow controller position (slingshot stretching)
-            transform.position = holdingController.position;
-
-            // On release (grip up)
-            if (!IsGripHeld(holdingController))
-            {
-                Launch();
-            }
-        }
+        isGrabbed = true;
+        pullStartPosition = transform.position;
     }
 
-    public void TryGrab(Transform controller)
+    private float lastToggleTime = -Mathf.Infinity; // Tracks when the function was last run,
+                                                    // point of this is that the slingshot doesnt catch the ball again after shooting
+    public float toggleCooldown = 2f;
+    public void SetActive()
     {
+        // Check if enough time has passed
         if (Time.time - lastToggleTime < toggleCooldown)
-            return;
+        {
+            return; // Not enough time passed — ignore call
+        }
 
-        lastToggleTime = Time.time;
-        active = true;
-        holdingController = controller;
-        rb.isKinematic = true;
+        lastToggleTime = Time.time; // Update last called time
 
-        Debug.Log("Slingshot grabbed");
+        // Toggle logic
+        if (active)
+        {
+            Debug.Log("active: FALSE");
+            active = false;
+        }
+        else
+        {
+            Debug.Log("active: TRUE");
+            active = true;
+        }
+
     }
 
-    public void Launch()
+    void Launch(SelectExitEventArgs args)
     {
-        if (!active) return;
-
         Vector3 pullVector = slingshotAnchor.position - transform.position;
 
         rb.isKinematic = false;
@@ -67,10 +73,8 @@ public class SlingshotProjectile : MonoBehaviour
         if (slingshotVisual != null)
         {
             slingshotVisual.ResetSling();
+            SetActive();
         }
-
-        holdingController = null;
-        active = false;
     }
 
     public void ResetProjectile()
@@ -79,11 +83,5 @@ public class SlingshotProjectile : MonoBehaviour
         rb.angularVelocity = Vector3.zero;
         rb.isKinematic = true;
         transform.position = startPos;
-    }
-
-    private bool IsGripHeld(Transform controller)
-    {
-        var input = Input.GetKeyDown(KeyCode.R);//controller.GetComponent<WebXRController>();
-        return input;//input != null && input.GetButton(WebXRController.ButtonTypes.Grip);
     }
 }

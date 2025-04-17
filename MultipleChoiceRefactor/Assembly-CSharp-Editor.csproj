@@ -1342,6 +1342,10 @@
       <Project>{EFC074FD-5BAC-749D-B533-650648710387}</Project>
       <Name>Assembly-CSharp</Name>
     </ProjectReference>
+    <ProjectReference Include="WebXR.Interactions.Samples.XRInteractionToolkit.Editor.csproj">
+      <Project>{F4749B9F-0E74-C13F-C291-C89F42B4F58B}</Project>
+      <Name>WebXR.Interactions.Samples.XRInteractionToolkit.Editor</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />
