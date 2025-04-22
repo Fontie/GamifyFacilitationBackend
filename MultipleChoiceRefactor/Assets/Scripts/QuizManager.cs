@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro; // If using TextMeshPro
+using System.Runtime.InteropServices;
 
 public class QuizManager : MonoBehaviour
 {
@@ -14,6 +15,9 @@ public class QuizManager : MonoBehaviour
 
     private int score = 0;
     private bool quizFinished = false;
+
+    [DllImport("__Internal")]
+    private static extern void SendScoreToBackEnd(int score, string gameName);
 
 
     void Start()
@@ -114,6 +118,9 @@ public class QuizManager : MonoBehaviour
         {
             questionText.text = resultText;
         }
+
+        var trueScore = score * 20;
+        SendScoreToBackEnd(trueScore, "MultipleChoice");
 
         // You could also trigger some animation or sound here
     }

@@ -45,6 +45,8 @@ public class ThrowableReset : MonoBehaviour
         currentHolder = null;
     }
 
+
+
     public void ResetPosition()
     {
         StartCoroutine(ResetAfterRelease());

@@ -4,6 +4,10 @@ public class VRButtonAction : MonoBehaviour
 {
     public ThrowableReset throwable;
 
+    public void objectHasBeenTouchedByVRHand()
+    {
+        ResetThrow();
+    }
     public void ResetThrow()
     {
         Debug.Log("VR Button Pressed!");

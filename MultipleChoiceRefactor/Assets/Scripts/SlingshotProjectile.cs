@@ -1,13 +1,13 @@
-using System;
+ï»¿using System;
 using UnityEngine;
-using UnityEngine.XR.Interaction.Toolkit;
+
 
 public class SlingshotProjectile : MonoBehaviour
 {
     public Transform slingshotAnchor;
     public float launchForceMultiplier = 1000f;
 
-    private XRGrabInteractable grab;
+    private bool grab;
     public Boolean active = false; //Check if the projectile is pulled back
     private Rigidbody rb;
 
@@ -17,20 +17,18 @@ public class SlingshotProjectile : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        grab = GetComponent<XRGrabInteractable>();
         startPos = transform.position;
 
         rb.isKinematic = true; // Start frozen
 
-        grab.selectExited.AddListener(Launch);
 
 
     }
 
-    void OnGrab(SelectEnterEventArgs args)
+    public void IAmMakingThisFunctionVerySpecificSoThatSendMessageCanFindItEasier()
     {
-        isGrabbed = true;
-        pullStartPosition = transform.position;
+        Debug.Log("I reached the other object, HUZAAA!!!");
+        Launch();
     }
 
     private float lastToggleTime = -Mathf.Infinity; // Tracks when the function was last run,
@@ -41,7 +39,7 @@ public class SlingshotProjectile : MonoBehaviour
         // Check if enough time has passed
         if (Time.time - lastToggleTime < toggleCooldown)
         {
-            return; // Not enough time passed — ignore call
+            return; // Not enough time passed ï¿½ ignore call
         }
 
         lastToggleTime = Time.time; // Update last called time
@@ -60,7 +58,7 @@ public class SlingshotProjectile : MonoBehaviour
 
     }
 
-    void Launch(SelectExitEventArgs args)
+    void Launch()
     {
         Vector3 pullVector = slingshotAnchor.position - transform.position;
 

@@ -19,7 +19,7 @@ public class WallHit : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Throwable"))
+        if (collision.gameObject.CompareTag("Projectile"))
         {
             // Visual feedback
             isToggled = !isToggled;

@@ -10,23 +10,39 @@ namespace GamifyBackEnd.Controllers
         [HttpPost("submit")]
         public IActionResult SubmitScore([FromBody] ScoreData score)
         {
-            if (score == null || score.PlayerName == null)
+            if (score == null || score.playerName == null)
             {
                 return BadRequest("Invalid data.");
             }
+
+            
                 
             using (var db = new GameDbContext())
             {
-                var newScore = new Score
+                var playerId = db.Users.Where(p => p.Name == score.playerName).Select(p => p.Id).FirstOrDefault();
+                var gameId = db.Games.Where(g => g.LevelName == score.gameName).Select(g => g.Id).FirstOrDefault();
+
+                var scoreExisting = db.Scores.FirstOrDefault(s => s.User_id == playerId && s.Level_id == gameId);
+
+                if (scoreExisting == null)
                 {
-                    scoreAmount = score.Score,
-                    Level_id = 0,
-                    User_id = 0
+                    var newScore = new Score
+                    {
+                        scoreAmount = score.Score,
+                        Level_id = gameId,
+                        User_id = playerId
 
-                };
+                    };
 
-                db.Scores.Add(newScore);
-                db.SaveChanges();
+                    db.Scores.Add(newScore);
+                    db.SaveChanges();
+                }
+                else if (scoreExisting.scoreAmount < score.Score)
+                {
+                    scoreExisting.scoreAmount = score.Score;
+                    db.SaveChanges();
+                }
+                
             }
 
             return Ok(new { message = "Score submitted successfully!" });
@@ -35,7 +51,8 @@ namespace GamifyBackEnd.Controllers
 
     public class ScoreData
     {
-        public string PlayerName { get; set; }
+        public string gameName { get; set; }
+        public string playerName { get; set; }
         public int Score { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 using UnityEngine;
 
+
 public class SlingshotVisual : MonoBehaviour
 {
     public Transform leftPoint;         // One end of the slingshot
