@@ -78,16 +78,7 @@ namespace GamifyBackEnd.Controllers
 
                 if (myUser != null)
                 {
-
-                    if (myUser.accesslevel == 0)
-                    {
-                        myUser.accesslevel = 5;
-                    }
-                    else
-                    {
-                        myUser.accesslevel = 0;
-                    }
-                    
+                   myUser.accesslevel++;
                 }
                 db.SaveChanges();
             }

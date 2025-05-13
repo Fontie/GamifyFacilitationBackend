@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 
 using System.Collections.Generic;
@@ -87,8 +88,8 @@ public class PlayerMovement : MonoBehaviour
         Vector3 right = transform.TransformDirection(Vector3.right);
 
 
-
-        bool isRunning = Input.GetKey(KeyCode.LeftShift);
+        // too lazy to remove run function
+        bool isRunning = false;//Input.GetKey(KeyCode.LeftShift);
 
         float curSpeedX = canMove ? (isRunning ? runSpeed : walkSpeed) * Input.GetAxis("Vertical") : 0;
 
@@ -103,7 +104,7 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetButton("Jump") && canMove && characterController.isGrounded)
         {
 
-            moveDirection.y = jumpPower;
+           // moveDirection.y = jumpPower;
 
         }
         else

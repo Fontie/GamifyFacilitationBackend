@@ -29,14 +29,26 @@ namespace GamifyBackEnd.Controllers
 
             using (var db = new GameDbContext())
             {
-                var newGame = new Game
-                {
-                    Name = gameName,
-                    ZipData = fileData,
-                    LevelName = levelName
-                };
+                var existingGame = db.Games.FirstOrDefault(g => g.LevelName == levelName);
 
-                db.Games.Add(newGame);
+                if (existingGame == null)
+                {
+                    var newGame = new Game
+                    {
+                        Name = gameName,
+                        ZipData = fileData,
+                        LevelName = levelName
+                    };
+
+                    db.Games.Add(newGame);
+                }
+                else
+                {
+                    existingGame.ZipData = fileData;
+                    existingGame.Name = gameName;
+                }
+
+                
                 db.SaveChanges();
             }
             return Ok(new { message = "Game saved on Database!" });

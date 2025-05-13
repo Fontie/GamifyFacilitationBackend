@@ -28,22 +28,23 @@ namespace GamifyBackEnd.Controllers
                 byte[] zipData = await GetGameZipFromDatabase(levelName);
                 if (zipData == null) return NotFound("Game not found.");
 
-                // Define extraction path (wwwroot/games/{gameId}/)
+                // Define extraction path (wwwroot/games/{levelName}/)
                 string gameFolderPath = Path.Combine(_env.WebRootPath, "games", levelName);
 
-                var killme = 10;
-
-                // Ensure directory exists
-                if (!Directory.Exists(gameFolderPath))
+                // DELETE the existing folder and all contents (if it exists)
+                if (Directory.Exists(gameFolderPath))
                 {
-                    Directory.CreateDirectory(gameFolderPath);
+                    Directory.Delete(gameFolderPath, recursive: true);
+                }
 
-                    // Extract the ZIP file
-                    using (var zipStream = new MemoryStream(zipData))
-                    using (var archive = new ZipArchive(zipStream, ZipArchiveMode.Read))
-                    {
-                        archive.ExtractToDirectory(gameFolderPath);
-                    }
+                // Recreate the directory
+                Directory.CreateDirectory(gameFolderPath);
+
+                // Extract the ZIP file
+                using (var zipStream = new MemoryStream(zipData))
+                using (var archive = new ZipArchive(zipStream, ZipArchiveMode.Read))
+                {
+                    archive.ExtractToDirectory(gameFolderPath);
                 }
 
                 // Return the game URL

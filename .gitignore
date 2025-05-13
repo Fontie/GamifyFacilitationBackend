@@ -8,10 +8,8 @@
 [Bb]uilds/
 [Ll]ogs/
 [Mm]emoryCaptures/
-
 # Avoid ignoring Asset Store packages
 !Assets/**/*.unitypackage
-
 # ============
 # OS generated
 # ============
@@ -22,7 +20,6 @@
 .Trashes
 Thumbs.db
 Desktop.ini
-
 # ============
 # Visual Studio
 # ============
@@ -37,43 +34,32 @@ Desktop.ini
 *.svd
 *.pdb
 *.opendb
-
 # Rider IDE
 .idea/
 *.sln.iml
-
 # JetBrains Rider
 *.sln.iml
 *.dotSettings.user
 .idea/**
-
 # ===========
 # Unity3D Meta
 # ===========
 *.pidb
-*.meta
-
 # ===================
 # Crash Reports
 # ===================
 *.crash
-
 # ===========
 # Logs
 # ===========
 *.log
 *.tlog
-
 # ============
 # Package Management
 # ============
 Packages/
 Packages/manifest.json
 Packages/packages-lock.json
-
-# Prevent uploading the project settings
-ProjectSettings/
-
 # ===========
 # Cache
 # ===========

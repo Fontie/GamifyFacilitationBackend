@@ -65,7 +65,7 @@
   };
 
   window.OpenInSamePage = function(url) {
-      //window.location.href = url;  // Redirect to URL
+      window.location.href = url;  // Redirect to URL
   };
 </script>
 
@@ -95,6 +95,10 @@
       </div>
     </div>
     <script>
+      
+
+      let wasHidden = false;
+
       
       // Make sure the unityInstance is accessible globally
       var unityInstance = null;
@@ -162,12 +166,12 @@
       }
 
       var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/overworld.loader.js";
+      var loaderUrl = buildUrl + "/Builds.loader.js";
       var config = {
         arguments: [],
-        dataUrl: buildUrl + "/overworld.data.br",
-        frameworkUrl: buildUrl + "/overworld.framework.js.br",
-        codeUrl: buildUrl + "/overworld.wasm.br",
+        dataUrl: buildUrl + "/Builds.data.br",
+        frameworkUrl: buildUrl + "/Builds.framework.js.br",
+        codeUrl: buildUrl + "/Builds.wasm.br",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "DefaultCompany",
         productName: "Overworld",
@@ -265,6 +269,26 @@
         })
         .catch(error => console.error("Error fetching data:", error));
       };
+
+
+
+      // Function to run when user returns to the tab to update data if needed
+      function onTabReturn() 
+      {
+        console.log("User returned to the tab!");
+        window.GetDataForUnity();
+        // Your custom function call here
+      }
+
+      document.addEventListener('visibilitychange', function () {
+      if (document.visibilityState === 'hidden' && !wasHidden) {
+        wasHidden = true;
+        window.SavePlayerProgress();
+      } else if (document.visibilityState === 'visible' && wasHidden) {
+        onTabReturn();
+        wasHidden = false; // Reset for next time
+      }
+    });
 
     </script>
   </body>

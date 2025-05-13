@@ -18,8 +18,17 @@ public class CubeTrigger : MonoBehaviour
     public bool playerOnCube = false; // Track if the player is standing on the cube
     public string levelURL = "http://unity3d.com/";
     public int accessLevelNeeded = 0;
+    public bool accessLevelOnSeperateTab = true;
     private bool canAccessLevel = false;
-    public GameObject playerObject; 
+    private Vector3 originalPosition;
+    public GameObject playerObject;
+
+    private void Start()
+    {
+        PlayerMovement playerScript = playerObject.GetComponent<PlayerMovement>();
+        originalPosition = transform.position;
+        //Debug.Log(playerScript.accessLevel);
+    }
 
     public void OnTriggerEnter(Collider collision)
     {
@@ -70,8 +79,20 @@ public class CubeTrigger : MonoBehaviour
 
     private void Update()
     {
+        PlayerMovement playerScript = playerObject.GetComponent<PlayerMovement>();
+
+        if (playerScript != null && playerScript.accessLevel < accessLevelNeeded)
+        {
+            transform.position = originalPosition + new Vector3(0f, -200f, 0f);
+        }
+        else
+        {
+            transform.position = originalPosition;
+        }
+
         if (canAccessLevel && Input.GetKeyDown(KeyCode.Return)) // Detect Enter key
         {
+            //enter level
             PerformAction();
         }
     }
@@ -80,14 +101,18 @@ public class CubeTrigger : MonoBehaviour
     {
 
 #if UNITY_WEBGL && !UNITY_EDITOR
+    if (accessLevelOnSeperateTab)
+    {
         PlayerMovement playerScript = playerObject.GetComponent<PlayerMovement>();
-
-
+        SavePlayerProgress(playerScript.name.ToString(), playerScript.xx, playerScript.yy, playerScript.zz);
+        Application.OpenURL(levelURL);
+    }
+    else
+    {
+        PlayerMovement playerScript = playerObject.GetComponent<PlayerMovement>();
         enterLevel(playerScript.name.ToString(), playerScript.xx, playerScript.yy, playerScript.zz, levelURL.ToString());
+    }
 
-        //Dont do it here, you need to wait for the progress to save
-        //TODO: Make seperate function just to save the progress without going into a different page!!!
-         //OpenInSamePage(levelURL);
 #else
         Application.OpenURL(levelURL);
         #endif

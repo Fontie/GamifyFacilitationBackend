@@ -1,33 +1,6 @@
 <script>
   localStorage.setItem("authToken", "your_test_token_here");
 
-  window.GetDataForUnity = function() 
-  {
-      const token = localStorage.getItem("authToken"); // Retrieve token from storage
-
-      if (!token) {
-          console.error("No auth token found!");
-          return;
-      }
-
-      fetch("https://localhost:7220/api/overworld/getPlayerProgress", { // Call backend API
-          method: "GET",
-          headers: {
-              "Content-Type": "application/json"
-              //"Authorization": `Bearer ${token}` // Send token in the header
-          }
-      })
-      .then(response => response.json())
-      .then(data => {
-          console.log("Data received from backend:", data);
-
-          // Send the received data back to Unity
-          window.unityInstance.SendMessage("GameManager", "ReceiveData", JSON.stringify(data));
-      })
-      .catch(error => console.error("Error fetching data:", error));
-  };
-
-
   window.SavePlayerProgress = function(playerName, xx, yy, zz) 
   {
       const token = localStorage.getItem("authToken"); // Retrieve token from storage
@@ -56,6 +29,38 @@
       })
       .then(response => response.json())
       .then(result => console.log("Progress sent successfully:", result))
+      .catch(error => console.error("Error sending progress:", error));
+  };
+
+  window.enterLevel = function(playerName, xx, yy, zz, url) 
+  {
+      const token = localStorage.getItem("authToken"); // Retrieve token from storage
+
+      /*if (!token) {
+          console.error("No auth token found!");
+          return;
+      }*/
+
+      const data = {
+          playerName: playerName,
+          xx: xx,
+          yy: yy,
+          zz: zz
+      };
+
+      console.log(data);
+
+      fetch("https://localhost:7220/api/overworld/savePlayerProgress", {
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}` // Send token in the header
+          },
+          body: JSON.stringify(data)
+      })
+      .then(response => response.json())
+      .then(result => console.log("Progress sent successfully:", result))
+      .finally(window.location.href = url)
       .catch(error => console.error("Error sending progress:", error));
   };
 
@@ -90,6 +95,49 @@
       </div>
     </div>
     <script>
+      
+
+      let wasHidden = false;
+
+      
+      // Make sure the unityInstance is accessible globally
+      var unityInstance = null;
+
+      window.SavePlayerProgress = function(playerName, xx, yy, zz) 
+      {
+          const token = localStorage.getItem("authToken"); // Retrieve token from storage
+
+          /*if (!token) {
+              console.error("No auth token found!");
+              return;
+          }*/
+
+          const data = {
+              playerName: playerName,
+              xx: xx,
+              yy: yy,
+              zz: zz
+          };
+
+          console.log(data);
+
+          fetch("https://localhost:7220/api/overworld/savePlayerProgress", {
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/json",
+                  "Authorization": `Bearer ${token}` // Send token in the header
+              },
+              body: JSON.stringify(data)
+          })
+          .then(response => response.json())
+          .then(result => console.log("Progress sent successfully:", result))
+          .catch(error => console.error("Error sending progress:", error));
+      };
+
+      window.OpenInSamePage = function(url) {
+          window.location.href = url;  // Redirect to URL
+      };
+
       var canvas = document.querySelector("#unity-canvas");
 
       // Shows a temporary message banner/ribbon for a few seconds, or
@@ -118,12 +166,12 @@
       }
 
       var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/overworld.loader.js";
+      var loaderUrl = buildUrl + "/Builds.loader.js";
       var config = {
         arguments: [],
-        dataUrl: buildUrl + "/overworld.data.br",
-        frameworkUrl: buildUrl + "/overworld.framework.js.br",
-        codeUrl: buildUrl + "/overworld.wasm.br",
+        dataUrl: buildUrl + "/Builds.data.br",
+        frameworkUrl: buildUrl + "/Builds.framework.js.br",
+        codeUrl: buildUrl + "/Builds.wasm.br",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "DefaultCompany",
         productName: "Overworld",
@@ -175,18 +223,72 @@
       script.onload = () => {
         createUnityInstance(canvas, config, (progress) => {
           document.querySelector("#unity-progress-bar-full").style.width = 100 * progress + "%";
-              }).then((unityInstance) => {
-                document.querySelector("#unity-loading-bar").style.display = "none";
-                document.querySelector("#unity-fullscreen-button").onclick = () => {
-                  unityInstance.SetFullscreen(1);
-                };
+        }).then((instance) => {
+          unityInstance = instance; // Make unityInstance globally accessible
 
-              }).catch((message) => {
-                alert(message);
-              });
-            };
+          // Hide the loading bar once the game is ready
+          document.querySelector("#unity-loading-bar").style.display = "none";
+
+          // Set up the fullscreen button
+          document.querySelector("#unity-fullscreen-button").onclick = () => {
+            unityInstance.SetFullscreen(1);
+          };
+        }).catch((message) => {
+          alert(message);
+        });
+      };
 
       document.body.appendChild(script);
+
+      // Ensure GetDataForUnity works only after Unity is loaded
+      window.GetDataForUnity = function() {
+        if (!unityInstance) {
+          console.error("Unity instance is not ready yet!");
+          return;
+        }
+
+        const token = localStorage.getItem("authToken"); // Retrieve token from storage
+
+        if (!token) {
+            console.error("No auth token found!");
+            return;
+        }
+
+        fetch("https://localhost:7220/api/overworld/getPlayerProgress", { // Call backend API
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log("Data received from backend:", data);
+
+            // Send the received data back to Unity
+            unityInstance.SendMessage("Player", "ReceiveData", JSON.stringify(data));
+        })
+        .catch(error => console.error("Error fetching data:", error));
+      };
+
+
+
+      // Function to run when user returns to the tab to update data if needed
+      function onTabReturn() 
+      {
+        console.log("User returned to the tab!");
+        window.GetDataForUnity();
+        // Your custom function call here
+      }
+
+      document.addEventListener('visibilitychange', function () {
+      if (document.visibilityState === 'hidden' && !wasHidden) {
+        wasHidden = true;
+        window.SavePlayerProgress();
+      } else if (document.visibilityState === 'visible' && wasHidden) {
+        onTabReturn();
+        wasHidden = false; // Reset for next time
+      }
+    });
 
     </script>
   </body>
