@@ -1,4 +1,7 @@
 <!DOCTYPE html>
+
+<script src="config.js"></script>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -42,7 +45,7 @@
             // level name is which level the game will be played in, this is what the back-end will be looking for.
 
             try {
-                const response = await fetch('https://localhost:7220/api/admin/upload', {  
+                const response = await fetch(window.env.API_URL+'/api/admin/upload', {  
                     method: 'POST',
                     body: formData
                 });

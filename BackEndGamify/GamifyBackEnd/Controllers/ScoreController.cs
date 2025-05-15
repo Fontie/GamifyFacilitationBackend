@@ -47,7 +47,38 @@ namespace GamifyBackEnd.Controllers
 
             return Ok(new { message = "Score submitted successfully!" });
         }
+
+        [HttpGet("total-score/{playerName}")]
+        public IActionResult GetTotalScore(string playerName)
+        {
+            if (string.IsNullOrWhiteSpace(playerName))
+            {
+                return BadRequest("Player name is required.");
+            }
+
+            using (var db = new GameDbContext())
+            {
+                var playerId = db.Users
+                                 .Where(p => p.Name == playerName)
+                                 .Select(p => p.Id)
+                                 .FirstOrDefault();
+
+                if (playerId == 0)
+                {
+                    return NotFound("User not found.");
+                }
+
+                var totalScore = db.Scores
+                                   .Where(s => s.User_id == playerId)
+                                   .Sum(s => s.scoreAmount);
+
+                return Ok(new { totalScore = totalScore });
+            }
+        }
+
     }
+
+
 
     public class ScoreData
     {

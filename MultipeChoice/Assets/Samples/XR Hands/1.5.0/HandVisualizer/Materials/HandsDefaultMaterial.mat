@@ -60,6 +60,6 @@ Material:
     m_Colors:
     - _BaseColor: {r: 0.063047186, g: 0.95471686, b: 0.077095814, a: 1}
     - _CameraFadeParams: {r: 0, g: Infinity, b: 0, a: 0}
-    - _Color: {r: 0.06304716, g: 0.95471686, b: 0.07709577, a: 1}
+    - _Color: {r: 0.063047186, g: 0.95471686, b: 0.077095814, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

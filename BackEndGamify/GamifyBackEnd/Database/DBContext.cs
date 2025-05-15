@@ -10,7 +10,7 @@ namespace GamifyBackEnd.DB
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
-            options.UseMySql("server=localhost;database=gamify;user=root;password=;",
+            options.UseMySql("server=localhost;database=gamify_db;user=gamify_db;password=michael&kingsleyRock!;",
                 new MySqlServerVersion(new Version(8, 0, 23))); // Adjust version as needed
         }
     }

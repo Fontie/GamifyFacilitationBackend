@@ -31,6 +31,8 @@ namespace GamifyBackEnd.Controllers
                 // Define extraction path (wwwroot/games/{levelName}/)
                 string gameFolderPath = Path.Combine(_env.WebRootPath, "games", levelName);
 
+                //Upload bij upload niet call
+
                 // DELETE the existing folder and all contents (if it exists)
                 if (Directory.Exists(gameFolderPath))
                 {

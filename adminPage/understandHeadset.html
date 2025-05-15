@@ -1,4 +1,7 @@
 <!DOCTYPE html>
+
+<script src="config.js"></script>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -31,7 +34,7 @@
                 // Example: Game ID is hardcoded here, but it can be dynamic
 
                 // Send GET request to backend
-                const response = await fetch(`https://localhost:7220/api/overworld/increaseAccess/${userName}`, {
+                const response = await fetch(window.env.API_URL+`/api/overworld/increaseAccess/${userName}`, {
                     method: 'POST',   // Ensure the POST method is being used
                     headers: {
                         'Content-Type': 'application/json',  // Set the content type for JSON if required
@@ -49,7 +52,8 @@
                     console.log('Backend Response:', data);
 
                     // Go back to the previous page after the request is successful
-                    window.history.back();
+                    //window.history.back();
+                    window.close();
                 }
 
                 
