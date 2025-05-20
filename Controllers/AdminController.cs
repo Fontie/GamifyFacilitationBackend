@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using GamifyBackEnd.DB;
 using MySqlConnector;
+using MongoDB.Driver.Core.Configuration;
+using GamifyBackEnd.Database;
 
 namespace GamifyBackEnd.Controllers
 {
@@ -13,6 +15,13 @@ namespace GamifyBackEnd.Controllers
     [Route("api/admin")]
     public class FileUploadController : ControllerBase
     {
+        private readonly BlobService _blobService;
+
+        public FileUploadController(BlobService blobService)
+        {
+            _blobService = blobService;
+        }
+
         [HttpPost("upload")]
         [RequestSizeLimit(100_000_000_000_000)]
         public async Task<IActionResult> UploadGame([FromForm] string gameName, [FromForm] IFormFile file, [FromForm] string levelName)
@@ -59,22 +68,14 @@ namespace GamifyBackEnd.Controllers
         [HttpGet("download/{gameName}")]
         public async Task<IActionResult> DownloadGame(string gameName)
         {
-            var game = new Game{};
-
-            using (var db = new GameDbContext())
-            {
-                game = db.Games.FirstOrDefault(game => game.LevelName == gameName);
-            }
-         
-            if (game.ZipData == null)
-            {
-                return NotFound("Game not found.");
-            }
-
-            byte[] fileData = game.ZipData;
+             
+            byte[] fileData = _blobService.GetSasUrl(gameName); ;
 
             return File(fileData, "application/zip", $"{gameName}.zip");
         }
-        
+
+
+       
+
     }
 }
