@@ -1,3 +1,4 @@
+using GamifyBackEnd.Database;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.FileProviders;
 
@@ -27,6 +28,7 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddSingleton<BlobService>();
 
 
 var app = builder.Build();
@@ -37,36 +39,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseStaticFiles();
-app.UseStaticFiles(new StaticFileOptions
-{
-    FileProvider = new PhysicalFileProvider(
-        Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "games")),
-    RequestPath = "/games",
-    ServeUnknownFileTypes = true, //hail marry at this point tbh
-    DefaultContentType = "application/octet-stream",
-
-    OnPrepareResponse = ctx =>
-    {
-        var path = ctx.File.Name;
-
-        // If serving a .br file, set the Content-Encoding header
-        if (path.EndsWith(".br"))
-        {
-            ctx.Context.Response.Headers["Content-Encoding"] = "br";
-
-            // Set the correct Content-Type based on the file extension
-            ctx.Context.Response.Headers["Content-Type"] = path switch
-            {
-                var p when p.EndsWith(".js.br") => "application/javascript",
-                var p when p.EndsWith(".data.br") => "application/octet-stream",
-                var p when p.EndsWith(".wasm.br") => "application/wasm",
-                _ => "application/octet-stream"
-            };
-        }
-    }
-});
 
 
 

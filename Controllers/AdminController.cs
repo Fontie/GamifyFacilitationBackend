@@ -27,51 +27,17 @@ namespace GamifyBackEnd.Controllers
         public async Task<IActionResult> UploadGame([FromForm] string gameName, [FromForm] IFormFile file, [FromForm] string levelName)
         {
             if (file == null || file.Length == 0)
-            {
                 return BadRequest("No file uploaded.");
-            }
-            
 
-            using var memoryStream = new MemoryStream();
-            await file.CopyToAsync(memoryStream);
-            byte[] fileData = memoryStream.ToArray();
+            var fileName = levelName;
 
-            using (var db = new GameDbContext())
-            {
-                var existingGame = db.Games.FirstOrDefault(g => g.LevelName == levelName);
+            // DO NOT generate unique names. We need to be SURE it is always the same otherwise the front-end falls apart.
+            // fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
 
-                if (existingGame == null)
-                {
-                    var newGame = new Game
-                    {
-                        Name = gameName,
-                        ZipData = fileData,
-                        LevelName = levelName
-                    };
+            using var stream = file.OpenReadStream();
+            var url = await _blobService.UploadFileAsync(stream, fileName, file.ContentType);
 
-                    db.Games.Add(newGame);
-                }
-                else
-                {
-                    existingGame.ZipData = fileData;
-                    existingGame.Name = gameName;
-                }
-
-                
-                db.SaveChanges();
-            }
-            return Ok(new { message = "Game saved on Database!" });
-        }
-
-
-        
-        [HttpGet("download/{gameName}")]
-        public async Task<IActionResult> DownloadGame(string gameName)
-        {
-             
-            byte[] fileData = _blobService.GetSasUrl(gameName); ;
-
-            return File(fileData, "application/zip", $"{gameName}.zip");
+            return Ok(new { message = "Game saved at " + url });
         }
 
 

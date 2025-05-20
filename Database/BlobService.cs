@@ -14,33 +14,38 @@ namespace GamifyBackEnd.Database
 
         public BlobService(IConfiguration config)
         {
-            _storageAccountName = config["AzureBlob:AccountName"]!; //Add the name from Geert-Jan
-            _storageAccountKey = config["AzureBlob:AccountKey"]!; //Add the Key from Geert-Jan
-            _containerName = config["AzureBlob:ContainerName"]!; //Add the container from Geert-Jan
-            var connectionString = config["AzureBlob:ConnectionString"]!; //Add the constring from Geert-Jan
+            _storageAccountName = config["AzureBlob:AccountName"]!; //Found in appsettings.json
+            _storageAccountKey = config["AzureBlob:AccountKey"]!; //Found in appsettings.json
+            _containerName = config["AzureBlob:ContainerName"]!; //Found in appsettings.json
+            var connectionString = config["AzureBlob:ConnectionString"]!; //Found in appsettings.json
             _blobServiceClient = new BlobServiceClient(connectionString);
         }
 
-        public string GetSasUrl(string fileName)
+        public async Task<string> UploadFileAsync(Stream fileStream, string fileName, string contentType)
         {
             var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
+            await containerClient.CreateIfNotExistsAsync();
+            await containerClient.SetAccessPolicyAsync(Azure.Storage.Blobs.Models.PublicAccessType.None);
+
             var blobClient = containerClient.GetBlobClient(fileName);
 
-            var sasBuilder = new BlobSasBuilder
+            var blobHttpHeaders = new Azure.Storage.Blobs.Models.BlobHttpHeaders
             {
-                BlobContainerName = _containerName,
-                BlobName = fileName,
-                Resource = "b",
-                StartsOn = DateTimeOffset.UtcNow,
-                ExpiresOn = DateTimeOffset.UtcNow.AddMinutes(10)
+                ContentType = contentType
             };
 
-            sasBuilder.SetPermissions(BlobSasPermissions.Read);
+            await blobClient.UploadAsync(fileStream, new Azure.Storage.Blobs.Models.BlobUploadOptions
+            {
+                HttpHeaders = blobHttpHeaders,
+                TransferOptions = new Azure.Storage.StorageTransferOptions
+                {
+                    // Optional: adjust based on file size
+                    MaximumTransferSize = 4 * 1024 * 1024,
+                    InitialTransferSize = 4 * 1024 * 1024
+                }
+            });
 
-            var credential = new StorageSharedKeyCredential(_storageAccountName, _storageAccountKey);
-            var sasToken = sasBuilder.ToSasQueryParameters(credential).ToString();
-
-            return $"{blobClient.Uri}?{sasToken}";
+            return blobClient.Uri.ToString();
         }
     }
 }
