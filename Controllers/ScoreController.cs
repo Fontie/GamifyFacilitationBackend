@@ -7,6 +7,46 @@ namespace GamifyBackEnd.Controllers
     [Route("api/[controller]")]
     public class ScoreController : ControllerBase
     {
+        [HttpPost("login")]
+        public IActionResult Login([FromBody] LoginRequest request)
+        {
+            if (string.IsNullOrWhiteSpace(request.Name))
+            {
+                return BadRequest("Name is required.");
+            }
+
+            try
+            {
+                using (var db = new GameDbContext())
+                {
+                    // Check if the user already exists
+                    var user = db.Users.FirstOrDefault(u => u.Name == request.Name);
+
+                    if (user == null)
+                    {
+                        // Create new user
+                        user = new User
+                        {
+                            Name = request.Name,
+                            OverworldCoords = "15,5,5",
+                            accesslevel = 0
+                        };
+
+                     
+                        db.Users.Add(user);
+                        db.SaveChanges();
+                    }
+
+                    return Ok(new { success = true, name = user.Name });
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Database failure.");
+            }
+        }
+
+
         [HttpPost("submit")]
         public IActionResult SubmitScore([FromBody] ScoreData score)
         {
@@ -127,5 +167,10 @@ namespace GamifyBackEnd.Controllers
         public string gameName { get; set; }
         public string playerName { get; set; }
         public int Score { get; set; }
+    }
+
+    public class LoginRequest
+    {
+        public string Name { get; set; }
     }
 }
