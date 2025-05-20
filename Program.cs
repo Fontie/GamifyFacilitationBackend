@@ -1,12 +1,13 @@
 using GamifyBackEnd.Database;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.FileProviders;
+using DotNetEnv;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-
+DotNetEnv.Env.Load();
 
 
 builder.Services.AddCors(options =>

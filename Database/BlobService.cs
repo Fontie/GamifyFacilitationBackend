@@ -14,10 +14,10 @@ namespace GamifyBackEnd.Database
 
         public BlobService(IConfiguration config)
         {
-            _storageAccountName = config["AzureBlob:AccountName"]!; //Found in appsettings.json
-            _storageAccountKey = config["AzureBlob:AccountKey"]!; //Found in appsettings.json
-            _containerName = config["AzureBlob:ContainerName"]!; //Found in appsettings.json
-            var connectionString = config["AzureBlob:ConnectionString"]!; //Found in appsettings.json
+            _storageAccountName = Environment.GetEnvironmentVariable("AZUREBLOB_ACCOUNTNAME");//config["AzureBlob:AccountName"]!; //Found in appsettings.json
+            _storageAccountKey = Environment.GetEnvironmentVariable("AZUREBLOB_ACCOUNTKEY");//config["AzureBlob:AccountKey"]!; //Found in appsettings.json
+            _containerName = Environment.GetEnvironmentVariable("AZUREBLOB_CONTAINERNAME"); //config["AzureBlob:ContainerName"]!; //Found in appsettings.json
+            var connectionString = Environment.GetEnvironmentVariable("AZUREBLOB_CONNECTIONSTRING"); //config["AzureBlob:ConnectionString"]!; //Found in appsettings.json
             _blobServiceClient = new BlobServiceClient(connectionString);
         }
 

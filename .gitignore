@@ -34,6 +34,7 @@ Desktop.ini
 *.svd
 *.pdb
 *.opendb
+*.env
 # Rider IDE
 .idea/
 *.sln.iml
