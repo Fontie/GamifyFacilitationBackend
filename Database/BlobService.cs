@@ -21,7 +21,7 @@ namespace GamifyBackEnd.Database
             _blobServiceClient = new BlobServiceClient(connectionString);
         }
 
-        public async Task<string> UploadFileAsync(Stream fileStream, string fileName, string contentType)
+        public async Task<string> UploadFileAsync(Stream fileStream, string fileName, string contentType, string contentEncoding = null)
         {
             var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
             await containerClient.CreateIfNotExistsAsync();
@@ -34,12 +34,17 @@ namespace GamifyBackEnd.Database
                 ContentType = contentType
             };
 
+            if (!string.IsNullOrEmpty(contentEncoding))
+            {
+                blobHttpHeaders.ContentEncoding = contentEncoding;
+            }
+
             await blobClient.UploadAsync(fileStream, new Azure.Storage.Blobs.Models.BlobUploadOptions
             {
                 HttpHeaders = blobHttpHeaders,
                 TransferOptions = new Azure.Storage.StorageTransferOptions
                 {
-                    // Optional: adjust based on file size
+                    // Optional: adjust based on file size but this should be good enough for unity webgl... I hope
                     MaximumTransferSize = 4 * 1024 * 1024,
                     InitialTransferSize = 4 * 1024 * 1024
                 }
@@ -47,5 +52,6 @@ namespace GamifyBackEnd.Database
 
             return blobClient.Uri.ToString();
         }
+
     }
 }
