@@ -44,7 +44,7 @@ namespace GamifyBackEnd.Controllers
                 await entryStream.CopyToAsync(memoryStream);
                 memoryStream.Position = 0;
 
-                string blobPath = $"" + levelName + $"/{entry.FullName.Replace("\\", "/")}";
+                string blobPath = $"yondas-quest\\" + levelName + $"/{entry.FullName.Replace("\\", "/")}";
                 string contentType = GetContentType(entry.Name);
 
                 string contentEncoding = Path.GetExtension(entry.Name).EndsWith(".br") ? "br" : null;
@@ -52,7 +52,7 @@ namespace GamifyBackEnd.Controllers
                 await _blobService.UploadFileAsync(memoryStream, blobPath, contentType, contentEncoding);
             }
 
-            return Ok(new { message = "ZIP file extracted and uploaded to testingNameNow/" });
+            return Ok(new { message = "ZIP file extracted and uploaded to yondas-quest/" });
 
         }
 

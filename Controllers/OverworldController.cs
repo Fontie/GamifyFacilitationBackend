@@ -7,14 +7,14 @@ namespace GamifyBackEnd.Controllers
     [Route("api/overworld")]
     public class OverworldController : Controller
     {
-        [HttpGet("getPlayerProgress")]
-        public IActionResult GetData()
+        [HttpGet("getPlayerProgress/{playerName}")]
+        public IActionResult GetData(string playerName)
         {
             var data = new { message = "I have failed thee!!!" };
 
             using (var db = new GameDbContext())
             {
-                var userName = "LeeroyJankins";
+                var userName = playerName;
                 var userFromDB = db.Users.FirstOrDefault(u => u.Name == userName);
 
                 if (userFromDB != null)
