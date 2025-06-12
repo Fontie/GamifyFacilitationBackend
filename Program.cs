@@ -1,7 +1,10 @@
-using GamifyBackEnd.Database;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.FileProviders;
 using DotNetEnv;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using GamifyBackEnd.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +12,28 @@ var builder = WebApplication.CreateBuilder(args);
 
 DotNetEnv.Env.Load();
 
+// 3a. Bind settings
+var jwt = builder.Configuration.GetSection("Jwt");
+var signingKey = new SymmetricSecurityKey(
+    Encoding.UTF8.GetBytes(jwt["Key"]!));
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        // .NET 8 uses JsonWebTokenHandler by default (30 % faster)
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = jwt["Issuer"],
+            ValidAudience = jwt["Audience"],
+            IssuerSigningKey = signingKey
+        };
+    });
+
+builder.Services.AddAuthorization();
 
 builder.Services.AddCors(options =>
 {
@@ -30,6 +55,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<BlobService>();
+builder.Services.AddScoped<AuthService>();
 
 
 var app = builder.Build();

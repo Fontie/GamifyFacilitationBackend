@@ -74,7 +74,7 @@ namespace GamifyBackEnd.Controllers
 
                 if (game != null)
                 {
-                    fileData = game.ZipData;
+          //          fileData = game.ZipData;
                 }
 
                 return fileData;

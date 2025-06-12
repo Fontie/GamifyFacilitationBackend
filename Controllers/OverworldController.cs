@@ -10,20 +10,27 @@ namespace GamifyBackEnd.Controllers
         [HttpGet("getPlayerProgress/{playerName}")]
         public IActionResult GetData(string playerName)
         {
-            var data = new { message = "I have failed thee!!!" };
-
-            using (var db = new GameDbContext())
+            try
             {
-                var userName = playerName;
-                var userFromDB = db.Users.FirstOrDefault(u => u.Name == userName);
+                var data = new { message = "No data has been foud" };
 
-                if (userFromDB != null)
+                using (var db = new GameDbContext())
                 {
-                    return Ok(userFromDB);
-                }           
-            }
+                    var userName = playerName;
+                    var userFromDB = db.Users.FirstOrDefault(u => u.Name == userName);
 
-            return Ok(data);
+                    if (userFromDB != null)
+                    {
+                        return Ok(userFromDB);
+                    }
+                }
+
+                return Ok(data);
+            }
+            catch (Exception e)
+            {
+                return BadRequest("Database failure: " + e.Message);
+            }
         }
 
         public IActionResult Index()
@@ -34,27 +41,34 @@ namespace GamifyBackEnd.Controllers
         [HttpPost("savePlayerProgress")]
         public IActionResult savePlayerProgress([FromBody] progressData data)
         {
-            if (data.PlayerName == null)
+            try
             {
-                return BadRequest("Invalid data.");
-            }
-
-            using (var db = new GameDbContext())
-            {
-                var myUser = db.Users.FirstOrDefault(u => u.Name == data.PlayerName);
-                
-                if (myUser != null)
+                if (data.PlayerName == null)
                 {
-                    var xxstring = Convert.ToString(data.xx);
-                    var yystring = Convert.ToString(data.yy);
-                    var zzstring = Convert.ToString(data.zz);
-
-                    myUser.OverworldCoords = xxstring+","+ yystring + "," + zzstring + ",";
+                    return BadRequest("Invalid data.");
                 }
-                db.SaveChanges();
-            }
 
-            return Ok(new { message = "Updated user progress!" });
+                using (var db = new GameDbContext())
+                {
+                    var myUser = db.Users.FirstOrDefault(u => u.Name == data.PlayerName);
+
+                    if (myUser != null)
+                    {
+                        var xxstring = Convert.ToString(data.xx);
+                        var yystring = Convert.ToString(data.yy);
+                        var zzstring = Convert.ToString(data.zz);
+
+                        myUser.OverworldCoords = xxstring + "," + yystring + "," + zzstring + ",";
+                    }
+                    db.SaveChanges();
+                }
+
+                return Ok(new { message = "Updated user progress!" });
+            }
+            catch (Exception e)
+            {
+                return BadRequest("Database failure: " + e.Message);
+            }
         }
 
         public class progressData
@@ -67,23 +81,30 @@ namespace GamifyBackEnd.Controllers
         }
 
 
-        //TODO: MAKE THIS SOMETHING THAT IS ACTUALLY USED LATER FFS!!!
+        //TODO: MAKE THIS SOMETHING THAT IS ACTUALLY USED LATER!!!
         [HttpPost("increaseAccess/{userName}")]
         public IActionResult increaseAccess(string userName)
         {
-
-            using (var db = new GameDbContext())
+            try
             {
-                var myUser = db.Users.FirstOrDefault(u => u.Name == userName);
-
-                if (myUser != null)
+                using (var db = new GameDbContext())
                 {
-                   myUser.accesslevel++;
-                }
-                db.SaveChanges();
-            }
+                    var myUser = db.Users.FirstOrDefault(u => u.Name == userName);
 
-            return Ok(new { message = "Access level updated!" });
+                    if (myUser != null)
+                    {
+                        myUser.accesslevel++;
+                    }
+                    db.SaveChanges();
+                }
+
+                return Ok(new { message = "Access level updated!" });
+            }
+            catch(Exception e)
+            {
+                return BadRequest("Database failure: " + e.Message);
+            }
+            
         }
     }
 }

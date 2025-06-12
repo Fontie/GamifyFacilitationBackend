@@ -1,5 +1,10 @@
 ﻿using GamifyBackEnd.DB;
+using GamifyBackEnd.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace GamifyBackEnd.Controllers
 {
@@ -7,6 +12,13 @@ namespace GamifyBackEnd.Controllers
     [Route("api/[controller]")]
     public class ScoreController : ControllerBase
     {
+        private readonly AuthService _authService;
+
+        public ScoreController(AuthService authService)
+        {
+            _authService = authService;
+        }
+
         [HttpPost("login")]
         public IActionResult Login([FromBody] LoginRequest request)
         {
@@ -37,15 +49,17 @@ namespace GamifyBackEnd.Controllers
                         db.SaveChanges();
                     }
 
-                    return Ok(new { success = true, name = user.Name });
+                    var roles = new[] { "Admin" }; // from database typically
+                    var token = _authService.GenerateJwtToken(user.Name, roles);
+
+                    return Ok(new { authToken = token, success = true, name = user.Name });
                 }
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                return BadRequest("Database failure.");
+                return BadRequest("Database failure: " + e.Message);
             }
         }
-
 
         [HttpPost("submit")]
         public IActionResult SubmitScore([FromBody] ScoreData score)
@@ -88,7 +102,7 @@ namespace GamifyBackEnd.Controllers
             }
             catch (Exception e)
             {
-                return BadRequest("Database failure.");
+                return BadRequest("Database failure: " + e.Message);
             }     
             
 
@@ -126,7 +140,7 @@ namespace GamifyBackEnd.Controllers
             }
             catch (Exception e)
             {
-                return BadRequest("Database failure.");
+                return BadRequest("Database failure: " + e.Message);
             }     
         }
 
@@ -154,7 +168,7 @@ namespace GamifyBackEnd.Controllers
             }
             catch(Exception e)
             {
-                return BadRequest("Database failure.");
+                return BadRequest("Database failure: " + e.Message);
             }      
         }
 

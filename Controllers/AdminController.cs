@@ -6,12 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 using GamifyBackEnd.DB;
 using MySqlConnector;
 using MongoDB.Driver.Core.Configuration;
-using GamifyBackEnd.Database;
 using System.IO.Compression;
+using GamifyBackEnd.Services;
 
 namespace GamifyBackEnd.Controllers
 {
-        
+
     [ApiController]    
     [Route("api/admin")]
     public class FileUploadController : ControllerBase
@@ -28,31 +28,65 @@ namespace GamifyBackEnd.Controllers
         public async Task<IActionResult> UploadGame([FromForm] string gameName, [FromForm] IFormFile file, [FromForm] string levelName)
         {
 
-            if (file == null || file.Length == 0)
-                return BadRequest("No file uploaded.");
-
-            using var archiveStream = file.OpenReadStream();
-            using var zipArchive = new ZipArchive(archiveStream, ZipArchiveMode.Read);
-
-            foreach (var entry in zipArchive.Entries)
+            try
             {
-                if (string.IsNullOrEmpty(entry.Name))
-                    continue; // Skip directories
+                if (file == null || file.Length == 0)
+                    return BadRequest("No file uploaded.");
 
-                using var entryStream = entry.Open();
-                using var memoryStream = new MemoryStream();
-                await entryStream.CopyToAsync(memoryStream);
-                memoryStream.Position = 0;
+                using var archiveStream = file.OpenReadStream();
+                using var zipArchive = new ZipArchive(archiveStream, ZipArchiveMode.Read);
 
-                string blobPath = $"yondas-quest\\" + levelName + $"/{entry.FullName.Replace("\\", "/")}";
-                string contentType = GetContentType(entry.Name);
+                foreach (var entry in zipArchive.Entries)
+                {
+                    if (string.IsNullOrEmpty(entry.Name))
+                        continue; // Skip directories
 
-                string contentEncoding = Path.GetExtension(entry.Name).EndsWith(".br") ? "br" : null;
+                    using var entryStream = entry.Open();
+                    using var memoryStream = new MemoryStream();
+                    await entryStream.CopyToAsync(memoryStream);
+                    memoryStream.Position = 0;
 
-                await _blobService.UploadFileAsync(memoryStream, blobPath, contentType, contentEncoding);
+                    string blobPath = $"yondas-quest\\" + levelName + $"/{entry.FullName.Replace("\\", "/")}";
+                    string contentType = GetContentType(entry.Name);
+
+                    string contentEncoding = Path.GetExtension(entry.Name).EndsWith(".br") ? "br" : null;
+
+                    await _blobService.UploadFileAsync(memoryStream, blobPath, contentType, contentEncoding);
+                }
+
+                using (var db = new GameDbContext())
+                {
+                    var gameId = db.Games.Where(g => g.LevelName == levelName).Select(g => g.Id).FirstOrDefault();
+                    var gameExisting = db.Games.FirstOrDefault(s => s.Id == gameId);
+
+                    if (gameExisting == null)
+                    {
+                        var newGame = new Game
+                        {
+                            Name = gameName,
+                            //ZipData = [],
+                            LevelName = levelName
+
+                        };
+
+                        db.Games.Add(newGame);
+                        db.SaveChanges();
+                    }
+                    else
+                    {
+                        gameExisting.Name = gameName;
+                        db.SaveChanges();
+                    }
+
+                }
+
+                return Ok(new { message = "ZIP file extracted and uploaded to yondas-quest/" });
             }
-
-            return Ok(new { message = "ZIP file extracted and uploaded to yondas-quest/" });
+            catch(Exception e)
+            {
+                return BadRequest("PIT Error: " + e.Message);
+            }
+            
 
         }
 
