@@ -64,7 +64,6 @@ namespace GamifyBackEnd.Controllers
                         var newGame = new Game
                         {
                             Name = gameName,
-                            //ZipData = [],
                             LevelName = levelName
 
                         };
