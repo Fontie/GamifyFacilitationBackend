@@ -5,7 +5,7 @@ VisualStudioVersion = 17.11.35222.181
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GamifyBackEnd", "GamifyBackEnd.csproj", "{4B72CDB3-88E7-4245-BC91-E77CB51A51F9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GamifyBackEndTest", "..\GamifyBackEndTest\GamifyBackEndTest.csproj", "{D6DD4622-36F7-49F0-B425-3CC19B603AD8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GamifyBackEndTest", "..\GamifyBackEndTest\GamifyBackEndTest.csproj", "{D6DD4622-36F7-49F0-B425-3CC19B603AD8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,12 +15,11 @@ Global
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{4B72CDB3-88E7-4245-BC91-E77CB51A51F9}.Debug|Any CPU.ActiveCfg = Release|Any CPU
 		{4B72CDB3-88E7-4245-BC91-E77CB51A51F9}.Debug|Any CPU.Build.0 = Release|Any CPU
-		{4B72CDB3-88E7-4245-BC91-E77CB51A51F9}.Release|Any CPU.ActiveCfg = Debug|Any CPU
-		{4B72CDB3-88E7-4245-BC91-E77CB51A51F9}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{4B72CDB3-88E7-4245-BC91-E77CB51A51F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B72CDB3-88E7-4245-BC91-E77CB51A51F9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D6DD4622-36F7-49F0-B425-3CC19B603AD8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D6DD4622-36F7-49F0-B425-3CC19B603AD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D6DD4622-36F7-49F0-B425-3CC19B603AD8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D6DD4622-36F7-49F0-B425-3CC19B603AD8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
