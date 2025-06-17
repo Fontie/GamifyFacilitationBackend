@@ -13,7 +13,7 @@ namespace GamifyBackEnd.Controllers
     public class ScoreController : ControllerBase
     {
         private readonly AuthService _authService;
-        private readonly GameDbContext _db;
+        private GameDbContext _db;
 
         public ScoreController(AuthService authService, GameDbContext db)
         {
@@ -151,13 +151,13 @@ namespace GamifyBackEnd.Controllers
         {
             try
             {
-                using (_db)
+                using (var db = new GameDbContext())
                 {
-                    var leaderboard = _db.Users
+                    var leaderboard = db.Users
                         .Select(user => new
                         {
                             Name = user.Name,
-                            Score = _db.Scores
+                            Score = db.Scores
                                       .Where(s => s.User_id == user.Id)
                                       .Sum(s => (int?)s.scoreAmount) ?? 0
                         })

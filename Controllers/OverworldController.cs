@@ -8,7 +8,7 @@ namespace GamifyBackEnd.Controllers
     [Route("api/overworld")]
     public class OverworldController : Controller
     {
-        private readonly GameDbContext _db;
+        private GameDbContext _db;
 
         public OverworldController(GameDbContext db)
         {

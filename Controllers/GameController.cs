@@ -26,14 +26,12 @@ namespace GamifyBackEnd.Controllers
         {
             try
             {
-                // Simulating fetching ZIP from database as a byte array
+                //Fetching ZIP from database as a byte array
                 byte[] zipData = await GetGameZipFromDatabase(levelName);
                 if (zipData == null) return NotFound("Game not found.");
 
                 // Define extraction path (wwwroot/games/{levelName}/)
                 string gameFolderPath = Path.Combine(_env.WebRootPath, "games", levelName);
-
-                //Upload bij upload niet call
 
                 // DELETE the existing folder and all contents (if it exists)
                 if (Directory.Exists(gameFolderPath))

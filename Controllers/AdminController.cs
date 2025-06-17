@@ -12,18 +12,19 @@ using GamifyBackEnd.Services;
 namespace GamifyBackEnd.Controllers
 {
 
-    [ApiController]    
+    [ApiController]
     [Route("api/admin")]
     public class FileUploadController : ControllerBase
     {
         private readonly BlobService _blobService;
-        private readonly GameDbContext _db;
+        private GameDbContext _db;
 
         public FileUploadController(BlobService blobService, GameDbContext db)
         {
             _blobService = blobService;
             _db = db;
         }
+
 
         [HttpPost("upload")]
         [RequestSizeLimit(100_000_000_000_000)]

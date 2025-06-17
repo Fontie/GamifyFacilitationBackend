@@ -51,7 +51,7 @@ namespace GamifyBackEnd.Services
                 HttpHeaders = blobHttpHeaders,
                 TransferOptions = new StorageTransferOptions
                 {
-                    // Optional: adjust based on file size but this should be good enough for unity webgl... I hope
+                    // This much should be enough for most webGL builds
                     MaximumTransferSize = 4 * 1024 * 1024,
                     InitialTransferSize = 4 * 1024 * 1024
                 }

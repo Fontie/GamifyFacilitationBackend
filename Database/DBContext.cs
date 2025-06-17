@@ -13,6 +13,10 @@ namespace GamifyBackEnd.DB
         {
         }
 
+        public GameDbContext()
+        {
+        }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
