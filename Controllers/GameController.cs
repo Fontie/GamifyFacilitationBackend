@@ -12,10 +12,12 @@ namespace GamifyBackEnd.Controllers
     public class GameController : ControllerBase
     {
         private readonly IWebHostEnvironment _env;
+        private readonly GameDbContext _db;
 
-        public GameController(IWebHostEnvironment env)
+        public GameController(IWebHostEnvironment env, GameDbContext db)
         {
             _env = env;
+            _db = db;
         }
 
         // Endpoint to fetch, extract, and serve the game, agree what the game id should even be at the end of the day pls.
@@ -67,9 +69,9 @@ namespace GamifyBackEnd.Controllers
                 byte[] fileData = null;
                 var game = new Game {};
 
-                using (var db = new GameDbContext())
+                using (_db)
                 {
-                    game = db.Games.FirstOrDefault(game => game.LevelName == levelName);
+                    game = _db.Games.FirstOrDefault(game => game.LevelName == levelName);
                 }
 
                 if (game != null)

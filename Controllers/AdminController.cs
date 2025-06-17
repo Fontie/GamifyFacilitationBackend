@@ -17,10 +17,12 @@ namespace GamifyBackEnd.Controllers
     public class FileUploadController : ControllerBase
     {
         private readonly BlobService _blobService;
+        private readonly GameDbContext _db;
 
-        public FileUploadController(BlobService blobService)
+        public FileUploadController(BlobService blobService, GameDbContext db)
         {
             _blobService = blobService;
+            _db = db;
         }
 
         [HttpPost("upload")]
@@ -54,10 +56,10 @@ namespace GamifyBackEnd.Controllers
                     await _blobService.UploadFileAsync(memoryStream, blobPath, contentType, contentEncoding);
                 }
 
-                using (var db = new GameDbContext())
+                using (_db)
                 {
-                    var gameId = db.Games.Where(g => g.LevelName == levelName).Select(g => g.Id).FirstOrDefault();
-                    var gameExisting = db.Games.FirstOrDefault(s => s.Id == gameId);
+                    var gameId = _db.Games.Where(g => g.LevelName == levelName).Select(g => g.Id).FirstOrDefault();
+                    var gameExisting = _db.Games.FirstOrDefault(s => s.Id == gameId);
 
                     if (gameExisting == null)
                     {
@@ -68,13 +70,13 @@ namespace GamifyBackEnd.Controllers
 
                         };
 
-                        db.Games.Add(newGame);
-                        db.SaveChanges();
+                        _db.Games.Add(newGame);
+                        _db.SaveChanges();
                     }
                     else
                     {
                         gameExisting.Name = gameName;
-                        db.SaveChanges();
+                        _db.SaveChanges();
                     }
 
                 }

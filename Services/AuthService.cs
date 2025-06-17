@@ -7,7 +7,7 @@ namespace GamifyBackEnd.Services
 {
     public class AuthService
     {
-        private readonly IConfiguration _config;
+        public readonly IConfiguration _config;
 
         public AuthService(IConfiguration config)
         {

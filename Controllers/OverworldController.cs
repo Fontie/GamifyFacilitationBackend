@@ -1,4 +1,5 @@
 ﻿using GamifyBackEnd.DB;
+using GamifyBackEnd.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GamifyBackEnd.Controllers
@@ -7,6 +8,13 @@ namespace GamifyBackEnd.Controllers
     [Route("api/overworld")]
     public class OverworldController : Controller
     {
+        private readonly GameDbContext _db;
+
+        public OverworldController(GameDbContext db)
+        {
+            _db = db;
+        }
+
         [HttpGet("getPlayerProgress/{playerName}")]
         public IActionResult GetData(string playerName)
         {
@@ -14,10 +22,10 @@ namespace GamifyBackEnd.Controllers
             {
                 var data = new { message = "No data has been foud" };
 
-                using (var db = new GameDbContext())
+                using (_db)
                 {
                     var userName = playerName;
-                    var userFromDB = db.Users.FirstOrDefault(u => u.Name == userName);
+                    var userFromDB = _db.Users.FirstOrDefault(u => u.Name == userName);
 
                     if (userFromDB != null)
                     {
@@ -48,9 +56,9 @@ namespace GamifyBackEnd.Controllers
                     return BadRequest("Invalid data.");
                 }
 
-                using (var db = new GameDbContext())
+                using (_db)
                 {
-                    var myUser = db.Users.FirstOrDefault(u => u.Name == data.PlayerName);
+                    var myUser = _db.Users.FirstOrDefault(u => u.Name == data.PlayerName);
 
                     if (myUser != null)
                     {
@@ -60,7 +68,7 @@ namespace GamifyBackEnd.Controllers
 
                         myUser.OverworldCoords = xxstring + "," + yystring + "," + zzstring + ",";
                     }
-                    db.SaveChanges();
+                    _db.SaveChanges();
                 }
 
                 return Ok(new { message = "Updated user progress!" });
@@ -87,15 +95,15 @@ namespace GamifyBackEnd.Controllers
         {
             try
             {
-                using (var db = new GameDbContext())
+                using (_db)
                 {
-                    var myUser = db.Users.FirstOrDefault(u => u.Name == userName);
+                    var myUser = _db.Users.FirstOrDefault(u => u.Name == userName);
 
                     if (myUser != null)
                     {
                         myUser.accesslevel++;
                     }
-                    db.SaveChanges();
+                    _db.SaveChanges();
                 }
 
                 return Ok(new { message = "Access level updated!" });

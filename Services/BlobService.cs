@@ -21,6 +21,13 @@ namespace GamifyBackEnd.Services
             _blobServiceClient = new BlobServiceClient(connectionString);
         }
 
+        //For allowing test variables during unit tests.
+        public BlobService(BlobServiceClient blobServiceClient, string containerName)
+        {
+            _blobServiceClient = blobServiceClient;
+            _containerName = containerName;
+        }
+
         public async Task<string> UploadFileAsync(Stream fileStream, string fileName, string contentType, string contentEncoding = null)
         {
             var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
