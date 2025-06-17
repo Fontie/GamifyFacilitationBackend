@@ -57,8 +57,8 @@ namespace GamifyBackEnd.Controllers
 
                 using (var db = new GameDbContext())
                 {
-                    var gameId = db.Games.Where(g => g.LevelName == levelName).Select(g => g.Id).FirstOrDefault();
-                    var gameExisting = db.Games.FirstOrDefault(s => s.Id == gameId);
+                    var gameId = db.games.Where(g => g.LevelName == levelName).Select(g => g.Id).FirstOrDefault();
+                    var gameExisting = db.games.FirstOrDefault(s => s.Id == gameId);
 
                     if (gameExisting == null)
                     {
@@ -69,7 +69,7 @@ namespace GamifyBackEnd.Controllers
 
                         };
 
-                        db.Games.Add(newGame);
+                        db.games.Add(newGame);
                         db.SaveChanges();
                     }
                     else

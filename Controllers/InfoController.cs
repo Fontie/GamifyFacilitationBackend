@@ -8,7 +8,7 @@ namespace GamifyBackEnd.Controllers
     {
         public IActionResult Index()
         {
-            return Ok("Version 1.2");
+            return Ok("Version 1.3");
         }
     }
 }
