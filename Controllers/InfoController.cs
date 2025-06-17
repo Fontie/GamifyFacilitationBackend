@@ -8,7 +8,7 @@ namespace GamifyBackEnd.Controllers
     {
         public IActionResult Index()
         {
-            return Ok("Endpoints can be reached");
+            return Ok("Endpoints can be reached. Also ci/cd works");
         }
     }
 }
