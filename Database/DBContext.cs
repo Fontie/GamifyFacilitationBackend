@@ -8,22 +8,11 @@ namespace GamifyBackEnd.DB
         public DbSet<Score> Scores { get; set; }
         public DbSet<User> Users { get; set; }
 
-        //for testing
-        public GameDbContext(DbContextOptions<GameDbContext> options) : base(options)
+        protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
-        }
-
-        public GameDbContext()
-        {
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-                var connection = Environment.GetEnvironmentVariable("DB_CONNECTION");
-                optionsBuilder.UseMySql(connection, new MySqlServerVersion(new Version(8, 0, 23)));
-            }
+            //options.UseMySql("server=localhost;database=gamify_db;user=gamify_db;password=michael&kingsleyRock!;",
+            options.UseMySql(Environment.GetEnvironmentVariable("DB_CONNECTION"),
+                new MySqlServerVersion(new Version(8, 0, 23))); // Adjust version as needed
         }
     }
 }

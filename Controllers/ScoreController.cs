@@ -9,16 +9,14 @@ using System.Text;
 namespace GamifyBackEnd.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/score")]
     public class ScoreController : ControllerBase
     {
         private readonly AuthService _authService;
-        private GameDbContext _db;
 
-        public ScoreController(AuthService authService, GameDbContext db)
+        public ScoreController(AuthService authService)
         {
             _authService = authService;
-            _db = db;
         }
 
         [HttpPost("login")]
@@ -31,10 +29,10 @@ namespace GamifyBackEnd.Controllers
 
             try
             {
-                using (_db)
+                using (var db = new GameDbContext())
                 {
                     // Check if the user already exists
-                    var user = _db.Users.FirstOrDefault(u => u.Name == request.Name);
+                    var user = db.Users.FirstOrDefault(u => u.Name == request.Name);
 
                     if (user == null)
                     {
@@ -47,8 +45,8 @@ namespace GamifyBackEnd.Controllers
                         };
 
 
-                        _db.Users.Add(user);
-                        _db.SaveChanges();
+                        db.Users.Add(user);
+                        db.SaveChanges();
                     }
 
                     var roles = new[] { "Admin" }; // from database typically
@@ -74,12 +72,12 @@ namespace GamifyBackEnd.Controllers
             
             try
             {
-                using (_db)
+                using (var db = new GameDbContext())
                 {
-                    var playerId = _db.Users.Where(p => p.Name == score.playerName).Select(p => p.Id).FirstOrDefault();
-                    var gameId = _db.Games.Where(g => g.LevelName == score.gameName).Select(g => g.Id).FirstOrDefault();
+                    var playerId = db.Users.Where(p => p.Name == score.playerName).Select(p => p.Id).FirstOrDefault();
+                    var gameId = db.Games.Where(g => g.LevelName == score.gameName).Select(g => g.Id).FirstOrDefault();
 
-                    var scoreExisting = _db.Scores.FirstOrDefault(s => s.User_id == playerId && s.Level_id == gameId);
+                    var scoreExisting = db.Scores.FirstOrDefault(s => s.User_id == playerId && s.Level_id == gameId);
 
                     if (scoreExisting == null)
                     {
@@ -91,13 +89,13 @@ namespace GamifyBackEnd.Controllers
 
                         };
 
-                        _db.Scores.Add(newScore);
-                        _db.SaveChanges();
+                        db.Scores.Add(newScore);
+                        db.SaveChanges();
                     }
                     else if (scoreExisting.scoreAmount < score.Score)
                     {
                         scoreExisting.scoreAmount = score.Score;
-                        _db.SaveChanges();
+                        db.SaveChanges();
                     }
 
                 }
@@ -121,9 +119,9 @@ namespace GamifyBackEnd.Controllers
 
             try
             {
-                using (_db)
+                using (var db = new GameDbContext())
                 {
-                    var playerId = _db.Users
+                    var playerId = db.Users
                                      .Where(p => p.Name == playerName)
                                      .Select(p => p.Id)
                                      .FirstOrDefault();
@@ -133,7 +131,7 @@ namespace GamifyBackEnd.Controllers
                         return NotFound("User not found.");
                     }
 
-                    var totalScore = _db.Scores
+                    var totalScore = db.Scores
                                        .Where(s => s.User_id == playerId)
                                        .Sum(s => s.scoreAmount);
 

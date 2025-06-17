@@ -8,13 +8,7 @@ namespace GamifyBackEnd.Controllers
     [Route("api/overworld")]
     public class OverworldController : Controller
     {
-        GameDbContext _db;
-
-        public OverworldController(GameDbContext db)
-        {
-            _db = db;
-        }
-
+        
         [HttpGet("getPlayerProgress/{playerName}")]
         public IActionResult GetData(string playerName)
         {
@@ -22,10 +16,10 @@ namespace GamifyBackEnd.Controllers
             {
                 var data = new { message = "No data has been foud" };
 
-                using (_db)
+                using (var db = new GameDbContext())
                 {
                     var userName = playerName;
-                    var userFromDB = _db.Users.FirstOrDefault(u => u.Name == userName);
+                    var userFromDB = db.Users.FirstOrDefault(u => u.Name == userName);
 
                     if (userFromDB != null)
                     {
@@ -56,9 +50,9 @@ namespace GamifyBackEnd.Controllers
                     return BadRequest("Invalid data.");
                 }
 
-                using (_db)
+                using (var db = new GameDbContext())
                 {
-                    var myUser = _db.Users.FirstOrDefault(u => u.Name == data.PlayerName);
+                    var myUser = db.Users.FirstOrDefault(u => u.Name == data.PlayerName);
 
                     if (myUser != null)
                     {
@@ -68,7 +62,7 @@ namespace GamifyBackEnd.Controllers
 
                         myUser.OverworldCoords = xxstring + "," + yystring + "," + zzstring + ",";
                     }
-                    _db.SaveChanges();
+                    db.SaveChanges();
                 }
 
                 return Ok(new { message = "Updated user progress!" });
@@ -95,15 +89,15 @@ namespace GamifyBackEnd.Controllers
         {
             try
             {
-                using (_db)
+                using (var db = new GameDbContext())
                 {
-                    var myUser = _db.Users.FirstOrDefault(u => u.Name == userName);
+                    var myUser = db.Users.FirstOrDefault(u => u.Name == userName);
 
                     if (myUser != null)
                     {
                         myUser.accesslevel++;
                     }
-                    _db.SaveChanges();
+                    db.SaveChanges();
                 }
 
                 return Ok(new { message = "Access level updated!" });
