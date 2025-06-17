@@ -75,7 +75,7 @@ namespace GamifyBackEnd.Controllers
                 using (var db = new GameDbContext())
                 {
                     var playerId = db.Users.Where(p => p.Name == score.playerName).Select(p => p.Id).FirstOrDefault();
-                    var gameId = db.Games.Where(g => g.LevelName == score.gameName).Select(g => g.Id).FirstOrDefault();
+                    var gameId = db.games.Where(g => g.LevelName == score.gameName).Select(g => g.Id).FirstOrDefault();
 
                     var scoreExisting = db.Scores.FirstOrDefault(s => s.User_id == playerId && s.Level_id == gameId);
 

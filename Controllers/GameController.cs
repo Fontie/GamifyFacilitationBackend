@@ -67,7 +67,7 @@ namespace GamifyBackEnd.Controllers
 
                 using (var db = new GameDbContext())
                 {
-                    game = db.Games.FirstOrDefault(game => game.LevelName == levelName);
+                    game = db.games.FirstOrDefault(game => game.LevelName == levelName);
                 }
 
                 if (game != null)
