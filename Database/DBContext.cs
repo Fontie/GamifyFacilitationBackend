@@ -7,7 +7,8 @@ namespace GamifyBackEnd.DB
         public DbSet<Game> games { get; set; }
         public DbSet<Score> Scores { get; set; }
         public DbSet<User> Users { get; set; }
-
+        public DbSet<Badge> badges { get; set; }
+        public DbSet<BadgeUser> badgeusers { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
             //options.UseMySql("server=localhost;database=gamify_db;user=gamify_db;password=michael&kingsleyRock!;",
