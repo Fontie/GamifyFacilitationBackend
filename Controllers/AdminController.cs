@@ -28,7 +28,7 @@ namespace GamifyBackEnd.Controllers
         [RequestSizeLimit(100_000_000_000_000)]
         public async Task<IActionResult> UploadGame([FromForm] string gameName, [FromForm] IFormFile file, [FromForm] string levelName)
         {
-            return Ok(new { message = "This function is disabled on the live website. Use a local version" });
+            //return Ok(new { message = "This function is disabled on the live website. Use a local version" });
 
             try
             {

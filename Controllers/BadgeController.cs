@@ -81,7 +81,7 @@ namespace GamifyBackEnd.Controllers
         [HttpPost("add")]
         public async Task<IActionResult> AddBadge([FromForm] string name, [FromForm] IFormFile image, [FromForm] IFormFile imageempty)
         {
-            return Ok(new { message = "This function is disabled on the live website. Use a local version" });
+            //return Ok(new { message = "This function is disabled on the live website. Use a local version" });
 
             if (image == null || imageempty == null)
                 return BadRequest("Images are required.");
@@ -132,7 +132,7 @@ namespace GamifyBackEnd.Controllers
         [HttpDelete("delete/{id}")]
         public IActionResult DeleteBadge(int id)
         {
-            return Ok(new { message = "This function is disabled on the live website. Use a local version" });
+            //return Ok(new { message = "This function is disabled on the live website. Use a local version" });
             try
             {
                 using (var db = new GameDbContext())
