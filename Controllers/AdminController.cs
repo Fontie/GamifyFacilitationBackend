@@ -28,6 +28,7 @@ namespace GamifyBackEnd.Controllers
         [RequestSizeLimit(100_000_000_000_000)]
         public async Task<IActionResult> UploadGame([FromForm] string gameName, [FromForm] IFormFile file, [FromForm] string levelName)
         {
+            return Ok(new { message = "This function is disabled on the live website. Use a local version" });
 
             try
             {
@@ -48,9 +49,25 @@ namespace GamifyBackEnd.Controllers
                     memoryStream.Position = 0;
 
                     string blobPath = $"yondas-quest\\" + levelName + $"/{entry.FullName.Replace("\\", "/")}";
-                    string contentType = GetContentType(entry.Name);
+
 
                     string contentEncoding = Path.GetExtension(entry.Name).EndsWith(".br") ? "br" : null;
+                    string contentType = "application/octet-stream"; // default fallback
+
+                    if (entry.Name.EndsWith(".wasm.br"))
+                    {
+                        contentType = "application/wasm";
+                        contentEncoding = "br";
+                    }
+                    else if (entry.Name.EndsWith(".js.br"))
+                    {
+                        contentType = "application/javascript";
+                        contentEncoding = "br";
+                    }
+                    else
+                    {
+                        contentType = GetContentType(entry.Name);
+                    }               
 
                     await _blobService.UploadFileAsync(memoryStream, blobPath, contentType, contentEncoding);
                 }

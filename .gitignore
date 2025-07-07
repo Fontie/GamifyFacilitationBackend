@@ -1,7 +1,6 @@
 # .NET build output
 bin/
 obj/
-bin/Debug/net8.0
 
 # Visual Studio
 .vs/
@@ -32,7 +31,6 @@ ScaffoldingReadMe.txt
 *.cache
 *.pdb
 *.mdb
-bin/
 
 # Others
 *.dbmdl
@@ -95,7 +93,7 @@ Desktop.ini
 .env
 .env.*
 
-# Global JSON
+# Global JSONf
 global.json
 
 # User-specific files
